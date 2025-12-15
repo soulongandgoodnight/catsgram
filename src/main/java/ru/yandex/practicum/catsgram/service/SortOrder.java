@@ -19,7 +19,6 @@ public enum SortOrder {
         }
     }
 
-    // Comparator для сортировки по postDate (Instant)
     public Comparator<Instant> getComparator() {
         return this == ASCENDING ? Comparator.naturalOrder() : Comparator.reverseOrder();
     }

@@ -5,22 +5,26 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.catsgram.exception.ConditionsNotMetException;
 import ru.yandex.practicum.catsgram.exception.NotFoundException;
 import ru.yandex.practicum.catsgram.model.Post;
+import ru.yandex.practicum.catsgram.service.SortOrder;
 //import ru.yandex.practicum.catsgram.service.UserService;
 
 import java.time.Instant;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 //import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor  // Для postService и userService
+@RequiredArgsConstructor
 public class PostService {
     private final Map<Long, Post> posts = new HashMap<>();
     private final UserService userService;  // Новая зависимость
 
-    public Collection<Post> findAll() {
-        return posts.values();
+    public List<Post> findAll(long from, int size, SortOrder sort) {
+        Comparator<Instant> comparator = sort.getComparator();
+        return posts.values().stream()
+                .sorted(Comparator.comparing(Post::getPostDate, comparator))
+                .skip(from)
+                .limit(size)
+                .toList();
     }
 
     public Post create(Post post) {
